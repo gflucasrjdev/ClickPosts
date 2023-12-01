@@ -44,32 +44,42 @@ const CreatePostScreen = () => {
         fetchUsers();
     }, []);
 
-    // Função para lidar com a criação de um novo post
     const handleCreate = async () => {
         try {
+            // Verificar se o título e o conteúdo estão preenchidos
+            if (!title.trim() || !body.trim()) {
+                Alert.alert('Erro', 'Por favor, preencha o título e o conteúdo do post.');
+                return;
+            }
+    
             if (users.length === 0) {
                 // Verifica se há usuários disponíveis
                 Alert.alert('Erro', 'Nenhum usuário disponível para atribuir como autor');
                 return;
             }
-
+    
             // Seleciona aleatoriamente um usuário da lista
             const randomUser = users[Math.floor(Math.random() * users.length)];
             const userId = randomUser.id;
-
+    
             // Cria um objeto de dados do post
             const postData = { title, body, userId };
-
+    
             // Chama a função para criar o post
             const response = await createPost(postData);
             const newPost = { ...response.data, userName: randomUser.name };
-
+    
             // Navega para a tela de posts, passando o novo post como parâmetro
             navigation.navigate('Posts', { newPost });
+    
+            // Mostrar mensagem de confirmação
+            Alert.alert('Sucesso', 'Post criado com sucesso!');
         } catch (error) {
             console.error(error);
+            Alert.alert('Erro', 'Ocorreu um erro ao tentar criar o post.');
         }
     };
+    
 
     // Renderização da tela
     return (
